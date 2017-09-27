@@ -8,8 +8,8 @@
                                  .rc_ctiv       = 0,                                \
                                  .rc_temp_ctiv  = 0,                                \
                                  .xtal_accuracy = NRF_CLOCK_LF_XTAL_ACCURACY_20_PPM}
-#define LED_1 7
-#define LED_2 6
+#define LED_1 6
+#define LED_2 7
 
 #endif
 #endif

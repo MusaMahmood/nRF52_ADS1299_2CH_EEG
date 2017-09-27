@@ -50,7 +50,7 @@
 #define BLE_UUID_EEG_CH1_CHAR 0xEEF1
 #define BLE_UUID_EEG_CH2_CHAR 0xEEF2
 
-#define EEG_PACKET_LENGTH 246
+#define EEG_PACKET_LENGTH 18
 
 /**@brief Biopotential Measurement Service init structure. This contains all options and data needed for
  *        initialization of the service. */
