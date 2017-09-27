@@ -149,7 +149,7 @@ extern "C" {
 //0xB2 = 4kSPS
 //0xB1 = 8kSPS
 //0xB0 = 16kSPS
-#define ADS1299_REGDEFAULT_CONFIG1 0x93 ///< Configuration register 1. Controls conversion mode and data rate.
+#define ADS1299_REGDEFAULT_CONFIG1 0x96 ///< Configuration register 1. Controls conversion mode and data rate.
 #define ADS1299_REGDEFAULT_CONFIG2 0xD0 ///< Configuration register 2. Controls LOFF comparator, reference, CLK pin, and test signal.
 #define ADS1299_REGDEFAULT_CONFIG3 0xEC//0xEC
 #define ADS1299_REGDEFAULT_LOFF 0x00//0x02   ///< Lead-off control register. Controls lead-off frequency, magnitude, and threshold.
@@ -162,15 +162,15 @@ extern "C" {
 #define ADS1299_REGDEFAULT_CH6SET 0xE1
 #define ADS1299_REGDEFAULT_CH7SET 0xE1
 #define ADS1299_REGDEFAULT_CH8SET 0xE1
-#define ADS1299_REGDEFAULT_BIAS_SENSP 0x03 //
-#define ADS1299_REGDEFAULT_BIAS_SENSN 0x03//
+#define ADS1299_REGDEFAULT_BIAS_SENSP 0x03
+#define ADS1299_REGDEFAULT_BIAS_SENSN 0x03
 #define ADS1299_REGDEFAULT_LOFF_SENSP 0x00
 #define ADS1299_REGDEFAULT_LOFF_SENSN 0x00
 #define ADS1299_REGDEFAULT_LOFF_FLIP 0x00
 #define ADS1299_REGDEFAULT_LOFF_STATP 0x00
 #define ADS1299_REGDEFAULT_LOFF_STATN 0x00
 #define ADS1299_REGDEFAULT_GPIO 0x0F
-#define ADS1299_REGDEFAULT_MISC1 0x00//0x20 - SRB1
+#define ADS1299_REGDEFAULT_MISC1 0x20//0x20 - SRB1
 #define ADS1299_REGDEFAULT_MISC2 0x00
 #define ADS1299_REGDEFAULT_CONFIG4 0x00
 
