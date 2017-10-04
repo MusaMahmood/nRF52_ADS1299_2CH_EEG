@@ -34,7 +34,7 @@
       link_use_linker_script_file="No"
       linker_additional_files=""
       linker_section_placement_file="$(ProjectDir)/flash_placement.xml"
-      linker_section_placement_macros="FLASH_START=0x1F000;SRAM_START=0x20002278" />
+      linker_section_placement_macros="FLASH_START=0x1F000;SRAM_START=0x20003460" />
     <configuration
       Name="External Keil"
       c_additional_options="--reduce_paths" />
