@@ -149,7 +149,7 @@ extern "C" {
 //0xB2 = 4kSPS
 //0xB1 = 8kSPS
 //0xB0 = 16kSPS
-#define ADS1299_REGDEFAULT_CONFIG1 0x92 ///< Configuration register 1. Controls conversion mode and data rate.
+#define ADS1299_REGDEFAULT_CONFIG1 0x95 ///< Configuration register 1. Controls conversion mode and data rate.
 #define ADS1299_REGDEFAULT_CONFIG2 0xD0 ///< Configuration register 2. Controls LOFF comparator, reference, CLK pin, and test signal.
 #define ADS1299_REGDEFAULT_CONFIG3 0xEC//0xEC
 #define ADS1299_REGDEFAULT_LOFF 0x00//0x02   ///< Lead-off control register. Controls lead-off frequency, magnitude, and threshold.

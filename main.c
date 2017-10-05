@@ -109,7 +109,12 @@ static uint16_t m_samples;
 #endif
 #define APP_FEATURE_NOT_SUPPORTED BLE_GATT_STATUS_ATTERR_APP_BEGIN + 2 /**< Reply when unsupported features are requested. */
 
-#define DEVICE_NAME "nRF52-EEG-4k"    //"nRF52_EEG"         /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME "nRF52-EEG"    //"nRF52_EEG"         /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME_500 "nRF52-EEG-500Hz"    //"nRF52_EEG"         /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME_1k "nRF52-EEG-1kHz"    //"nRF52_EEG"         /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME_2k "nRF52-EEG-2kHz"    //"nRF52_EEG"         /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME_4k "nRF52-EEG-4kHz"    //"nRF52_EEG"         /**< Name of device. Will be included in the advertising data. */
+
 #define MANUFACTURER_NAME "Potato Labs" /**< Manufacturer. Will be passed to Device Information Service. */
 #define APP_ADV_INTERVAL 300            /**< The advertising interval (in units of 0.625 ms. This value corresponds to 187.5 ms). */
 #define APP_ADV_TIMEOUT_IN_SECONDS 180  /**< The advertising timeout in units of seconds. */
@@ -217,10 +222,24 @@ static void gap_params_init(void) {
   ble_gap_conn_sec_mode_t sec_mode;
 
   BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
-
-  err_code = sd_ble_gap_device_name_set(&sec_mode,
-      (const uint8_t *)DEVICE_NAME,
+  if (ADS1299_REGDEFAULT_CONFIG1 == 0x96) {
+    err_code = sd_ble_gap_device_name_set(&sec_mode, (const uint8_t *)DEVICE_NAME,
       strlen(DEVICE_NAME));
+  } else if (ADS1299_REGDEFAULT_CONFIG1 == 0x95) {
+    err_code = sd_ble_gap_device_name_set(&sec_mode, (const uint8_t *)DEVICE_NAME_500,
+      strlen(DEVICE_NAME_500));
+  } else if (ADS1299_REGDEFAULT_CONFIG1 == 0x94) {
+    err_code = sd_ble_gap_device_name_set(&sec_mode, (const uint8_t *)DEVICE_NAME_1k,
+      strlen(DEVICE_NAME_1k));
+  } else if (ADS1299_REGDEFAULT_CONFIG1 == 0x93) {
+    err_code = sd_ble_gap_device_name_set(&sec_mode, (const uint8_t *)DEVICE_NAME_2k,
+      strlen(DEVICE_NAME_2k));
+  } else if (ADS1299_REGDEFAULT_CONFIG1 == 0x92) { 
+    err_code = sd_ble_gap_device_name_set(&sec_mode, (const uint8_t *)DEVICE_NAME_4k,
+      strlen(DEVICE_NAME_4k));
+  }
+
+  
   APP_ERROR_CHECK(err_code);
 
   /* YOUR_JOB: Use an appearance value matching the application's use case.
