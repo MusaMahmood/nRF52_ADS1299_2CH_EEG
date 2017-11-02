@@ -91,8 +91,8 @@
 #define DEVICE_FIRMWARE_STRING "Version 13.1.0"
 ble_eeg_t m_eeg;
 static bool m_connected = false;
-#define SPI_SCLK_WRITE_REG 2
-#define SPI_SCLK_SAMPLING 8
+#define SPI_SCLK_WRITE_REG 1
+#define SPI_SCLK_SAMPLING 2
 #endif
 
 #if defined(MPU9250) || defined(MPU9255) //mpu_send_timeout_handler
@@ -436,8 +436,8 @@ static void on_ble_evt(ble_evt_t *p_ble_evt) {
     break; // BLE_GAP_EVT_DISCONNECTED
 
   case BLE_GAP_EVT_CONNECTED:
-    ads_spi_uninit();
-    ads_spi_init_with_sample_freq(SPI_SCLK_SAMPLING);
+//    ads_spi_uninit();
+//    ads_spi_init_with_sample_freq(SPI_SCLK_SAMPLING);
 #if defined(ADS1299)
     ads1299_wake();
 #endif
@@ -783,6 +783,9 @@ int main(void) {
   ads1299_powerup();
   ads1299_stop_rdatac();
   ads1299_init_regs();
+
+  ads1299_read_all_registers();
+
   ads1299_soft_start_conversion();
   ads1299_check_id();
   ads1299_start_rdatac();

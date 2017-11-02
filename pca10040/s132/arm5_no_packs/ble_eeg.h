@@ -38,6 +38,7 @@
 
 #include "ble.h"
 #include "ble_srv_common.h"
+#include "sdk_config.h"
 #include <stdint.h>
 
 // Base UUID
@@ -50,7 +51,11 @@
 #define BLE_UUID_EEG_CH1_CHAR 0xEEF1
 #define BLE_UUID_EEG_CH2_CHAR 0xEEF2
 
-#define EEG_PACKET_LENGTH 246
+#if SAMPLE_RATE == 250
+  #define EEG_PACKET_LENGTH 60
+#else
+  #define EEG_PACKET_LENGTH 246
+#endif
 
 /**@brief Biopotential Measurement Service init structure. This contains all options and data needed for
  *        initialization of the service. */

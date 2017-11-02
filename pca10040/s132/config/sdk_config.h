@@ -1,10 +1,15 @@
 #ifndef SDK_CONFIG_H
 #define SDK_CONFIG_H
 // <<< Use Configuration Wizard in Context Menu >>>\n
+
 #ifdef USE_APP_CONFIG
 #include "app_config.h"
 #endif
 // <h> nRF_BLE 
+#ifndef SAMPLE_RATE
+#define SAMPLE_RATE 250
+#endif
+
 
 #ifndef LEDS_ENABLE
 #define LEDS_ENABLE 1
@@ -2241,7 +2246,7 @@
 // <4=> Debug 
 
 #ifndef SPI_CONFIG_LOG_LEVEL
-#define SPI_CONFIG_LOG_LEVEL 3
+#define SPI_CONFIG_LOG_LEVEL 4
 #endif
 
 // <o> SPI_CONFIG_INFO_COLOR  - ANSI escape code prefix.

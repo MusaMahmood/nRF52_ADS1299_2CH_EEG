@@ -57,7 +57,7 @@ extern "C" {
 #define ADS1299_SPI_MISO_PIN 8  //MASTER (nRF) IN ; SLAVE (ADS) DOUT
 #define ADS1299_PWDN_RST_PIN 11
 #define ADS1299_DRDY_PIN 15
-#elif defined(BOARD_FULL_EEG_V1)
+#elif defined(BOARD_FULL_EEG_V1) //PCB
 #define ADS1299_DRDY_PIN 8
 #define ADS1299_SPI_MISO_PIN 9 //MASTER (nRF) IN ; SLAVE (ADS) DOUT
 #define ADS1299_SPI_SCLK_PIN 10
@@ -65,7 +65,7 @@ extern "C" {
 #define ADS1299_RESET_PIN 12
 #define ADS1299_PWDN_PIN 13
 #define ADS1299_SPI_MOSI_PIN 14 //MASTER (nRF) OUT; SLAVE (ADS) DIN
-#elif defined (BOARD_EXG_V3)
+#elif defined (BOARD_EXG_V3) // PCB
 #define ADS1299_SPI_MOSI_PIN 16 //MASTER (nRF) OUT; SLAVE (ADS) DIN
 #define ADS1299_PWDN_RST_PIN 15
 #define ADS1299_SPI_CS_PIN 14
@@ -149,19 +149,19 @@ extern "C" {
 //0xB2 = 4kSPS
 //0xB1 = 8kSPS
 //0xB0 = 16kSPS
-#define ADS1299_REGDEFAULT_CONFIG1 0x95 ///< Configuration register 1. Controls conversion mode and data rate.
+#define ADS1299_REGDEFAULT_CONFIG1 0x96 ///< Configuration register 1. Controls conversion mode and data rate.
 #define ADS1299_REGDEFAULT_CONFIG2 0xD0 ///< Configuration register 2. Controls LOFF comparator, reference, CLK pin, and test signal.
-#define ADS1299_REGDEFAULT_CONFIG3 0xEC//0xEC
+#define ADS1299_REGDEFAULT_CONFIG3 0xEC //0xEC
 #define ADS1299_REGDEFAULT_LOFF 0x00//0x02   ///< Lead-off control register. Controls lead-off frequency, magnitude, and threshold.
 #define ADS1299_REGDEFAULT_CH1SET 0x60 ///< Channel 1 settings register. Controls channel 1 input mux, gain, and power-down.
   //0x61 is input short, 0x60 is normal electrode, 0x65 is test signal
 #define ADS1299_REGDEFAULT_CH2SET 0x60
 #define ADS1299_REGDEFAULT_CH3SET 0xE1
 #define ADS1299_REGDEFAULT_CH4SET 0xE1
-#define ADS1299_REGDEFAULT_CH5SET 0xE1
-#define ADS1299_REGDEFAULT_CH6SET 0xE1
-#define ADS1299_REGDEFAULT_CH7SET 0xE1
-#define ADS1299_REGDEFAULT_CH8SET 0xE1
+#define ADS1299_REGDEFAULT_CH5SET 0x00
+#define ADS1299_REGDEFAULT_CH6SET 0x00
+#define ADS1299_REGDEFAULT_CH7SET 0x00
+#define ADS1299_REGDEFAULT_CH8SET 0x00
 #define ADS1299_REGDEFAULT_BIAS_SENSP 0x03
 #define ADS1299_REGDEFAULT_BIAS_SENSN 0x03
 #define ADS1299_REGDEFAULT_LOFF_SENSP 0x00
@@ -173,6 +173,8 @@ extern "C" {
 #define ADS1299_REGDEFAULT_MISC1 0x20//0x20 - SRB1
 #define ADS1299_REGDEFAULT_MISC2 0x00
 #define ADS1299_REGDEFAULT_CONFIG4 0x00
+
+
 
 //
 // 0x00 =  125SPS
@@ -205,6 +207,8 @@ void ads_spi_init_with_sample_freq(uint8_t spi_sclk);
 void ads1299_powerup_reset(void);
 
 void ads1299_init_regs(void);
+
+void ads1299_read_all_registers(void);
 
 void ads1299_powerdn(void);
 
