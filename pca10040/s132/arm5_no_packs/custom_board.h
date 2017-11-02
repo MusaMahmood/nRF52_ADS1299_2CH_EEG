@@ -2,7 +2,7 @@
 #define CUSTOM_BOARD_H
 //BOARD_CUSTOM 
 //BOARD_EXG_V3 
-#ifdef BOARD_EXG_V3
+#if defined (BOARD_EXG_V3) | defined (BOARD_FULL_EEG_V1)
 
 #define NRF_CLOCK_LFCLKSRC      {.source        = NRF_CLOCK_LF_SRC_XTAL,            \
                                  .rc_ctiv       = 0,                                \
