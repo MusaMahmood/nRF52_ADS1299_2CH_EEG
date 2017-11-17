@@ -705,14 +705,14 @@ void in_pin_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action) {
   UNUSED_PARAMETER(pin);
   UNUSED_PARAMETER(action);
   if (m_connected) {
-    get_eeg_voltage_array_2ch(&m_eeg);
+    get_eeg_voltage_array_4ch(&m_eeg);
   }
 #if defined(APP_TIMER_SAMPLING) && APP_TIMER_SAMPLING == 1
   m_samples += 1;
 #endif
   if (m_eeg.eeg_ch1_count == EEG_PACKET_LENGTH) {
     m_eeg.eeg_ch1_count = 0;
-    ble_eeg_update_2ch(&m_eeg);
+    ble_eeg_update_4ch(&m_eeg);
   }
 }
 

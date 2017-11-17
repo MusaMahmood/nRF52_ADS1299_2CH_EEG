@@ -43,7 +43,7 @@ uint8_t ads1299_default_registers[] = {
  */
 
 static const nrf_drv_spi_t spi = NRF_DRV_SPI_INSTANCE(0);
-#define RX_DATA_LEN 12
+#define RX_DATA_LEN 15
 static uint8_t rx_data[RX_DATA_LEN];
 static volatile bool spi_xfer_done;
 
@@ -349,20 +349,16 @@ void get_eeg_voltage_array(ble_eeg_t *p_eeg) {
   //  }
 }
 
-void get_eeg_voltage_array_2ch(ble_eeg_t *p_eeg) {
+void get_eeg_voltage_array_4ch(ble_eeg_t *p_eeg) {
   memset(rx_data, 0, RX_DATA_LEN);
   spi_xfer_done = false;
   APP_ERROR_CHECK(nrf_drv_spi_transfer(&spi, NULL, 0, rx_data, RX_DATA_LEN));
   while (!spi_xfer_done)
     __WFE();
-  //    Try memcpy? or memcpy_fast()
+  //    memcpy? or memcpy_fast()
   memcpy_fast(&p_eeg->eeg_ch1_buffer[p_eeg->eeg_ch1_count], &rx_data[3], 3);
   memcpy_fast(&p_eeg->eeg_ch2_buffer[p_eeg->eeg_ch1_count], &rx_data[6], 3);
-  //  p_eeg->eeg_ch1_buffer[p_eeg->eeg_ch1_count] = rx_data[3];
-  //  p_eeg->eeg_ch1_buffer[p_eeg->eeg_ch1_count + 1] = rx_data[4];
-  //  p_eeg->eeg_ch1_buffer[p_eeg->eeg_ch1_count + 2] = rx_data[5];
-  //  p_eeg->eeg_ch2_buffer[p_eeg->eeg_ch1_count++] = rx_data[6];
-  //  p_eeg->eeg_ch2_buffer[p_eeg->eeg_ch1_count++] = rx_data[7];
-  //  p_eeg->eeg_ch2_buffer[p_eeg->eeg_ch1_count++] = rx_data[8];
+  memcpy_fast(&p_eeg->eeg_ch3_buffer[p_eeg->eeg_ch1_count], &rx_data[9], 3);
+  memcpy_fast(&p_eeg->eeg_ch4_buffer[p_eeg->eeg_ch1_count], &rx_data[12], 3);
   p_eeg->eeg_ch1_count += 3;
 }

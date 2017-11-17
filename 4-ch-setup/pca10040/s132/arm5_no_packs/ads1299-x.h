@@ -156,14 +156,14 @@ extern "C" {
 #define ADS1299_REGDEFAULT_CH1SET 0x60 ///< Channel 1 settings register. Controls channel 1 input mux, gain, and power-down.
   //0x61 is input short, 0x60 is normal electrode, 0x65 is test signal
 #define ADS1299_REGDEFAULT_CH2SET 0x60
-#define ADS1299_REGDEFAULT_CH3SET 0xE1
-#define ADS1299_REGDEFAULT_CH4SET 0xE1
+#define ADS1299_REGDEFAULT_CH3SET 0x60
+#define ADS1299_REGDEFAULT_CH4SET 0x60
 #define ADS1299_REGDEFAULT_CH5SET 0x00
 #define ADS1299_REGDEFAULT_CH6SET 0x00
 #define ADS1299_REGDEFAULT_CH7SET 0x00
 #define ADS1299_REGDEFAULT_CH8SET 0x00
-#define ADS1299_REGDEFAULT_BIAS_SENSP 0x03
-#define ADS1299_REGDEFAULT_BIAS_SENSN 0x03
+#define ADS1299_REGDEFAULT_BIAS_SENSP 0x0F
+#define ADS1299_REGDEFAULT_BIAS_SENSN 0x0F
 #define ADS1299_REGDEFAULT_LOFF_SENSP 0x00
 #define ADS1299_REGDEFAULT_LOFF_SENSN 0x00
 #define ADS1299_REGDEFAULT_LOFF_FLIP 0x00
@@ -227,5 +227,5 @@ void ads1299_start_rdatac(void);
 void ads1299_check_id(void);
 
 void get_eeg_voltage_array(ble_eeg_t *p_eeg);
-void get_eeg_voltage_array_2ch(ble_eeg_t *p_eeg);
+void get_eeg_voltage_array_4ch(ble_eeg_t *p_eeg);
 #endif // ADS1299_H__
