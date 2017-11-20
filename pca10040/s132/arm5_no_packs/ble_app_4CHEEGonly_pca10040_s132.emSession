@@ -61,13 +61,13 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="20" y="789" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" debugPath="../../../main.c" selected="1" top="765" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="50" y="212" useTextEdit="1" useBinaryEdit="0" left="0" path="ads1299-x.h" debugPath="ads1299-x.h" selected="0" top="175" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="71" y="348" useTextEdit="1" useBinaryEdit="0" left="0" path="ads1299-x.c" debugPath="ads1299-x.c" selected="0" top="321" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="40" y="3988" useTextEdit="1" useBinaryEdit="0" left="0" path="../config/sdk_config.h" debugPath="../config/sdk_config.h" selected="0" top="3956" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="37" y="83" useTextEdit="1" useBinaryEdit="0" left="0" path="ble_eeg.c" debugPath="ble_eeg.c" selected="0" top="313" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="46" y="80" useTextEdit="1" useBinaryEdit="0" left="0" path="ble_eeg.h" debugPath="ble_eeg.h" selected="0" top="83" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="50" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/util/app_error_weak.c" debugPath="../../../../../../components/libraries/util/app_error_weak.c" selected="0" top="29" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="20" y="794" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" debugPath="../../../main.c" selected="0" top="765" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="38" y="159" useTextEdit="1" useBinaryEdit="0" left="0" path="ads1299-x.h" debugPath="ads1299-x.h" selected="1" top="133" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="348" useTextEdit="1" useBinaryEdit="0" left="0" path="ads1299-x.c" debugPath="ads1299-x.c" selected="0" top="321" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="40" y="3988" useTextEdit="1" useBinaryEdit="0" left="0" path="../config/sdk_config.h" debugPath="../config/sdk_config.h" selected="0" top="3962" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="83" useTextEdit="1" useBinaryEdit="0" left="0" path="ble_eeg.c" debugPath="ble_eeg.c" selected="0" top="60" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="80" useTextEdit="1" useBinaryEdit="0" left="0" path="ble_eeg.h" debugPath="ble_eeg.h" selected="0" top="80" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="50" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/util/app_error_weak.c" debugPath="../../../../../../components/libraries/util/app_error_weak.c" selected="0" top="29" codecName="Default"/>
  </Files>
  <ARMCrossStudioWindow activeProject="ble_app_4CHEEGonly_pca10040_s132" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="nrf52832_xxaa" debugSearchFileMap="" fileDialogInitialDirectory="" debugSearchPath="" autoConnectCapabilities="3711"/>
 </session>
