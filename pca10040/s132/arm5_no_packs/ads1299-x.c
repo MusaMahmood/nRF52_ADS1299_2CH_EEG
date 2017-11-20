@@ -346,7 +346,7 @@ void ads1299_read_all_registers(ble_eeg_t *p_eeg) {
   uint8_t sum = 0;
   //check registers
   for (uint8_t i = 0; i < 23; i++) {
-    b[i] = rx_data_spi[2 + i] == &p_eeg->ads1299_current_configuration[i];
+    b[i] = rx_data_spi[2 + i] == p_eeg->ads1299_current_configuration[i];
     sum += b[i];
   }
 

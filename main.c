@@ -793,7 +793,6 @@ int main(void) {
   services_init();
   conn_params_init();
 #if defined(ADS1299)
-  //  ads_spi_init();
   ads_spi_init_with_sample_freq(SPI_SCLK_WRITE_REG);
   nrf_delay_ms(5);
   ads1299_powerdn();
