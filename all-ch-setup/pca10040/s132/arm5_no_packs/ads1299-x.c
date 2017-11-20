@@ -329,7 +329,7 @@ void ads1299_init_regs_default(ble_eeg_t *p_eeg) {
   //NOTE: Copy default values to p_eeg:
 }
 
-void ads1299_read_all_registers(void) {
+void ads1299_read_all_registers(ble_eeg_t *p_eeg) {
   uint8_t tx_data_spi[3];
   uint8_t rx_data_spi[25];
   memset(rx_data_spi, 0, 25);
@@ -346,7 +346,7 @@ void ads1299_read_all_registers(void) {
   uint8_t sum = 0;
   //check registers
   for (uint8_t i = 0; i < 23; i++) {
-    b[i] = rx_data_spi[2 + i] == ads1299_default_registers[i];
+    b[i] = rx_data_spi[2 + i] == &p_eeg->ads1299_current_configuration[i];
     sum += b[i];
   }
 

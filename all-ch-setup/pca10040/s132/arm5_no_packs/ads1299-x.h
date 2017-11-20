@@ -210,7 +210,7 @@ void ads1299_init_regs(ble_eeg_t *p_eeg, uint8_t *new_register_values);
 
 void ads1299_init_regs_default(ble_eeg_t *p_eeg);
 
-void ads1299_read_all_registers(void);
+void ads1299_read_all_registers(ble_eeg_t *p_eeg) ;
 
 void ads1299_powerdn(void);
 

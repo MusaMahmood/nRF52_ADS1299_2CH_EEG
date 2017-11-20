@@ -291,12 +291,12 @@ static void eeg_config_handler(uint16_t conn_handle, ble_eeg_t *p_eeg, uint8_t *
   NRF_LOG_INFO("REGISTER DATA RECEIVED: \n");
   NRF_LOG_HEXDUMP_DEBUG(data, 23);
   //TODO: Stop sampling
-  //  ads1299_standby();
+  ads1299_standby();
   ads1299_stop_rdatac();
   //TODO: write new register values:
   ads1299_init_regs(&m_eeg, data);
   //Start again:
-  ads1299_read_all_registers();
+  ads1299_read_all_registers(&m_eeg);
 
   ads1299_soft_start_conversion();
   ads1299_check_id();
@@ -801,7 +801,7 @@ int main(void) {
   ads1299_stop_rdatac();
   ads1299_init_regs_default(&m_eeg);
 
-  ads1299_read_all_registers();
+  ads1299_read_all_registers(&m_eeg);
 
   ads1299_soft_start_conversion();
   ads1299_check_id();
