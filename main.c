@@ -298,6 +298,8 @@ static void eeg_config_handler(uint16_t conn_handle, ble_eeg_t *p_eeg, uint8_t *
   //Start again:
   ads1299_read_all_registers(&m_eeg);
 
+  ble_eeg_update_configuration(&m_eeg, true);
+
   ads1299_soft_start_conversion();
   ads1299_check_id();
   ads1299_start_rdatac();
@@ -465,7 +467,7 @@ static void on_ble_evt(ble_evt_t *p_ble_evt) {
     m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
     m_connected = true;
     //NOTE: send init registers to GATT:
-    ble_eeg_update_configuration(&m_eeg);
+    ble_eeg_update_configuration(&m_eeg, false);
     break; // BLE_GAP_EVT_CONNECTED
 
   case BLE_GATTC_EVT_TIMEOUT:

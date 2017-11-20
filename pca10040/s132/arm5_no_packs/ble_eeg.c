@@ -80,9 +80,9 @@ static uint32_t eeg_ads1299_config_char_add(ble_eeg_t *p_eeg, const ble_eeg_init
   //  char_md.p_user_desc_md = NULL;
   char_md.p_cccd_md = &cccd_md;
   //  char_md.p_sccd_md = NULL;
-BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_EEG_CONFIG);
-//  ble_uuid.type = p_eeg->uuid_type;
-//  ble_uuid.uuid = BLE_UUID_EEG_CONFIG;
+  BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_EEG_CONFIG);
+  //  ble_uuid.type = p_eeg->uuid_type;
+  //  ble_uuid.uuid = BLE_UUID_EEG_CONFIG;
 
   memset(&attr_md, 0, sizeof(attr_md));
 
@@ -314,26 +314,28 @@ void ble_eeg_service_init(ble_eeg_t *p_eeg, const ble_eeg_init_t *p_eeg_init) {
 
 #if defined(ADS1299)
 
-void ble_eeg_update_configuration(ble_eeg_t *p_eeg) {
+void ble_eeg_update_configuration(ble_eeg_t *p_eeg, bool notify) {
   uint32_t err_code;
   uint16_t attr_handle;
+  uint16_t hvx_len = 23;
   if (p_eeg->conn_handle != BLE_CONN_HANDLE_INVALID) {
-    //    uint16_t hvx_len = 23;
-    //    ble_gatts_hvx_params_t const hvx_params = {
-    //        .handle = p_eeg->ads1299_config_char_handles.value_handle,
-    //        .type = BLE_GATT_HVX_NOTIFICATION,
-    //        .offset = 0,
-    //        .p_len = &hvx_len,
-    //        .p_data = p_eeg->ads1299_current_configuration,
-    //    };
-    //    err_code = sd_ble_gatts_hvx(p_eeg->conn_handle, &hvx_params);
     ble_gatts_value_t value;
-    value.len = 23;
+    value.len = hvx_len;
     value.offset = 0;
-    value.p_value = p_eeg->ads1299_current_configuration; 
+    value.p_value = p_eeg->ads1299_current_configuration;
 
     err_code = sd_ble_gatts_value_set(p_eeg->conn_handle, p_eeg->ads1299_config_char_handles.value_handle, &value);
-    NRF_LOG_INFO("err_code ble_eeg_updateconfig 0x%x \n", err_code);
+    NRF_LOG_INFO("err_code ble_eeg_update::config 0x%x \n", err_code);
+    if (notify) {
+      ble_gatts_hvx_params_t const hvx_params = {
+          .handle = p_eeg->ads1299_config_char_handles.value_handle,
+          .type = BLE_GATT_HVX_NOTIFICATION,
+          .offset = 0,
+          .p_len = &hvx_len,
+          .p_data = p_eeg->ads1299_current_configuration,
+      };
+      err_code = sd_ble_gatts_hvx(p_eeg->conn_handle, &hvx_params);
+    }
   }
 }
 
@@ -359,7 +361,7 @@ void ble_eeg_update_1ch_v2(ble_eeg_t *p_eeg) {
 void ble_eeg_update_4ch(ble_eeg_t *p_eeg) {
   //packet 1:
   uint32_t err_code;
-  if (p_eeg->conn_handle != BLE_CONN_HANDLE_INVALID) {
+  if (p_eeg->conn_handle != BLE_CONN_HANDLE_INVALID && p_eeg->ads1299_current_configuration[4] != 0xE1) {
     uint16_t hvx_len = EEG_PACKET_LENGTH;
     ble_gatts_hvx_params_t const hvx_params = {
         .handle = p_eeg->eeg_ch1_handles.value_handle,
@@ -374,7 +376,7 @@ void ble_eeg_update_4ch(ble_eeg_t *p_eeg) {
     NRF_LOG_INFO("sd_ble_gatts_hvx() ERR/RES: 0x%x\r\n", err_code);
   }
   //Packet 2
-  if (p_eeg->conn_handle != BLE_CONN_HANDLE_INVALID) {
+  if (p_eeg->conn_handle != BLE_CONN_HANDLE_INVALID && p_eeg->ads1299_current_configuration[5] != 0xE1) {
     uint16_t hvx_len = EEG_PACKET_LENGTH;
     ble_gatts_hvx_params_t const hvx_params = {
         .handle = p_eeg->eeg_ch2_handles.value_handle,
@@ -390,7 +392,7 @@ void ble_eeg_update_4ch(ble_eeg_t *p_eeg) {
   }
 
   //Packet 3
-  if (p_eeg->conn_handle != BLE_CONN_HANDLE_INVALID) {
+  if (p_eeg->conn_handle != BLE_CONN_HANDLE_INVALID && p_eeg->ads1299_current_configuration[6] != 0xE1) {
     uint16_t hvx_len = EEG_PACKET_LENGTH;
     ble_gatts_hvx_params_t const hvx_params = {
         .handle = p_eeg->eeg_ch3_handles.value_handle,
@@ -406,7 +408,7 @@ void ble_eeg_update_4ch(ble_eeg_t *p_eeg) {
   }
 
   //Packet 4
-  if (p_eeg->conn_handle != BLE_CONN_HANDLE_INVALID) {
+  if (p_eeg->conn_handle != BLE_CONN_HANDLE_INVALID && p_eeg->ads1299_current_configuration[7] != 0xE1) {
     uint16_t hvx_len = EEG_PACKET_LENGTH;
     ble_gatts_hvx_params_t const hvx_params = {
         .handle = p_eeg->eeg_ch4_handles.value_handle,

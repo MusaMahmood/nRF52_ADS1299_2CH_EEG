@@ -356,8 +356,12 @@ void ads1299_read_all_registers(ble_eeg_t *p_eeg) {
     NRF_LOG_HEXDUMP_DEBUG(&rx_data_spi[2], 23);
     NRF_LOG_HEXDUMP_DEBUG(b, 23);
   } else {
+    //Copy 'read' config to ads1299_current_config, so we can verify on other
+    // end that write was done incorrectly:
     NRF_LOG_INFO("ADS1299-4 - Data write successful \n");
   }
+  //Regardless, update ads1299_current_configuration with RX data to notify.  
+  memcpy_fast(&p_eeg->ads1299_current_configuration[0], &rx_data_spi[2], 23);
 }
 
 //NOTE: DATA RETRIEVAL
