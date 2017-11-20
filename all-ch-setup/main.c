@@ -287,13 +287,20 @@ static void on_yys_evt(ble_yy_service_t     * p_yy_service,
     }
 }
 */
+static void eeg_config_handler(uint16_t conn_handle, ble_eeg_t *p_eeg, uint8_t *data) {
+  NRF_LOG_INFO("data received\n");
+  NRF_LOG_HEXDUMP_DEBUG(data, 23);
+}
+
 
 /**@brief Function for initializing services that will be used by the application.
  */
 static void services_init(void) {
-  ble_eeg_service_init(&m_eeg);
-  /**@Device Information Service:*/
   uint32_t err_code;
+  ble_eeg_init_t init;
+  init.eeg_config_handler = eeg_config_handler;
+  ble_eeg_service_init(&m_eeg, &init);
+  /**@Device Information Service:*/
   ble_dis_init_t dis_init;
   memset(&dis_init, 0, sizeof(dis_init));
   ble_srv_ascii_to_utf8(&dis_init.manufact_name_str, (char *)MANUFACTURER_NAME);

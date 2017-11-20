@@ -42,7 +42,8 @@
 #include <stdint.h>
 
 // Base UUID
-#define BMS_UUID_BASE {0x57, 0x80, 0xD2, 0x94, 0xA3, 0xB2, 0xFE, 0x39, 0x5F, 0x87, 0xFD, 0x35, 0x00, 0x00, 0x8B, 0x22}
+#define BMS_UUID_BASE \
+  { 0x57, 0x80, 0xD2, 0x94, 0xA3, 0xB2, 0xFE, 0x39, 0x5F, 0x87, 0xFD, 0x35, 0x00, 0x00, 0x8B, 0x22 }
 
 // Service UUID
 #define BLE_UUID_BIOPOTENTIAL_EEG_MEASUREMENT_SERVICE 0xEEF0
@@ -55,31 +56,42 @@
 #define BLE_UUID_EEG_CH4_CHAR 0xEEF4
 
 #if SAMPLE_RATE == 250
-  #define EEG_PACKET_LENGTH 60
+#define EEG_PACKET_LENGTH 60
 #else
-  #define EEG_PACKET_LENGTH 246
+#define EEG_PACKET_LENGTH 246
 #endif
+
+//Forward declaration of ble_eeg_t type:
+typedef struct ble_eeg_s ble_eeg_t;
+
+// Setup handler for writes:
+typedef void (*ble_eeg_write_config_handler_t)(uint16_t conn_handle, ble_eeg_t *p_eeg, uint8_t *data);
+
+//Setup handler:
+typedef struct {
+  ble_eeg_write_config_handler_t eeg_config_handler;
+} ble_eeg_init_t;
 
 /**@brief Biopotential Measurement Service init structure. This contains all options and data needed for
  *        initialization of the service. */
-typedef struct
-{
+struct ble_eeg_s {
   uint8_t uuid_type;
-  uint16_t conn_handle;    /**< Event handler to be called for handling events in the Biopotential Measurement Service. */
-  uint16_t service_handle; /**< Handle of ble Service (as provided by the BLE stack). */
+  uint16_t conn_handle;                                 /**< Event handler to be called for handling events in the Biopotential Measurement Service. */
+  uint16_t service_handle;                              /**< Handle of ble Service (as provided by the BLE stack). */
   ble_gatts_char_handles_t ads1299_config_char_handles; /**< Handles related to the our body V measure characteristic. */
-  ble_gatts_char_handles_t eeg_ch1_handles; /**< Handles related to the our body V measure characteristic. */
-  ble_gatts_char_handles_t eeg_ch2_handles; /**< Handles related to the our body V measure characteristic. */
-  ble_gatts_char_handles_t eeg_ch3_handles; /**< Handles related to the our body V measure characteristic. */
-  ble_gatts_char_handles_t eeg_ch4_handles; /**< Handles related to the our body V measure characteristic. */
-  uint8_t eeg_ch1_buffer[EEG_PACKET_LENGTH]; //246 or 4* = 
-  uint8_t eeg_ch2_buffer[EEG_PACKET_LENGTH]; //246 or 4* = 
+  ble_eeg_write_config_handler_t eeg_config_handler;
+  ble_gatts_char_handles_t eeg_ch1_handles;             /**< Handles related to the our body V measure characteristic. */
+  ble_gatts_char_handles_t eeg_ch2_handles;             /**< Handles related to the our body V measure characteristic. */
+  ble_gatts_char_handles_t eeg_ch3_handles;             /**< Handles related to the our body V measure characteristic. */
+  ble_gatts_char_handles_t eeg_ch4_handles;             /**< Handles related to the our body V measure characteristic. */
+  uint8_t eeg_ch1_buffer[EEG_PACKET_LENGTH];            //246 or 4* =
+  uint8_t eeg_ch2_buffer[EEG_PACKET_LENGTH];            //246 or 4* =
   uint8_t eeg_ch3_buffer[EEG_PACKET_LENGTH];
   uint8_t eeg_ch4_buffer[EEG_PACKET_LENGTH];
   uint16_t eeg_ch1_count;
-} ble_eeg_t;
+};
 
-void ble_eeg_service_init(ble_eeg_t *p_eeg);
+void ble_eeg_service_init(ble_eeg_t *p_eeg, const ble_eeg_init_t *init);
 
 /**@brief Biopotential Measurement Service BLE stack event handler.
  *
