@@ -31,6 +31,19 @@
 #define MAX_LEN_BLE_PACKET_BYTES 246 //20*3bytes																						 /**< Maximum size in bytes of a transmitted Body Voltage Measurement. */
                                      //20*3bytes																						 /**< Maximum size in bytes of a transmitted Body Voltage Measurement. */
 
+//static void on_write(ble_eeg_t *p_eeg, ble_evt_t * p_ble_evt)
+//{
+//    ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
+//
+//    if ((p_evt_write->handle == p_eeg->event_handler.value_handle) &&
+//        (p_evt_write->len == 1) &&
+//        (p_eeg->eeg_config_handler != NULL))
+//    {
+//        p_eeg->eeg_config_handler(p_eeg, p_evt_write->data[0]);
+//    }
+//}
+
+
 void ble_eeg_on_ble_evt(ble_eeg_t *p_eeg, ble_evt_t *p_ble_evt) {
   switch (p_ble_evt->header.evt_id) {
   case BLE_GAP_EVT_CONNECTED:
@@ -43,9 +56,55 @@ void ble_eeg_on_ble_evt(ble_eeg_t *p_eeg, ble_evt_t *p_ble_evt) {
   //    case BLE_GATTS_EVT_HVN_TX_COMPLETE:
   //
   //      break;
+  case BLE_GATTS_EVT_WRITE:
+//    on_write(p_eeg, p_ble_evt);
+    break;
   default:
     break;
   }
+}
+
+static uint32_t eeg_ads1299_config_char_add(ble_eeg_t *p_eeg) {
+  uint32_t err_code = 0;
+  ble_uuid_t char_uuid;
+  uint8_t encoded_initial_eeg[23];
+  memset(encoded_initial_eeg, 0, 23);
+  BLE_UUID_BLE_ASSIGN(char_uuid, BLE_UUID_EEG_CONFIG);
+
+  ble_gatts_char_md_t char_md;
+
+  memset(&char_md, 0, sizeof(char_md));
+  char_md.char_props.read = 1;
+  char_md.char_props.write = 1;
+
+  ble_gatts_attr_md_t cccd_md;
+  BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
+  BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
+  cccd_md.vloc = BLE_GATTS_VLOC_STACK;
+  char_md.p_cccd_md = &cccd_md;
+  char_md.char_props.notify = 0;
+  ble_gatts_attr_md_t attr_md;
+  memset(&attr_md, 0, sizeof(attr_md));
+  attr_md.vloc = BLE_GATTS_VLOC_STACK;
+  attr_md.vlen = 1;
+
+  BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.read_perm);
+  BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.write_perm);
+
+  ble_gatts_attr_t attr_char_value;
+  memset(&attr_char_value, 0, sizeof(attr_char_value));
+  attr_char_value.p_uuid = &char_uuid;
+  attr_char_value.p_attr_md = &attr_md;
+  attr_char_value.init_len = 23;
+  attr_char_value.init_offs = 0;
+  attr_char_value.max_len = 23;
+  attr_char_value.p_value = encoded_initial_eeg;
+  err_code = sd_ble_gatts_characteristic_add(p_eeg->service_handle,
+      &char_md,
+      &attr_char_value,
+      &p_eeg->ads1299_config_char_handles);
+  APP_ERROR_CHECK(err_code);
+  return NRF_SUCCESS;
 }
 
 static uint32_t eeg_ch1_char_add(ble_eeg_t *p_eeg) {
@@ -134,7 +193,6 @@ static uint32_t eeg_ch2_char_add(ble_eeg_t *p_eeg) {
   return NRF_SUCCESS;
 }
 
-
 static uint32_t eeg_ch3_char_add(ble_eeg_t *p_eeg) {
   uint32_t err_code = 0;
   ble_uuid_t char_uuid;
@@ -177,7 +235,6 @@ static uint32_t eeg_ch3_char_add(ble_eeg_t *p_eeg) {
   APP_ERROR_CHECK(err_code);
   return NRF_SUCCESS;
 }
-
 
 static uint32_t eeg_ch4_char_add(ble_eeg_t *p_eeg) {
   uint32_t err_code = 0;
@@ -242,7 +299,9 @@ void ble_eeg_service_init(ble_eeg_t *p_eeg) {
   err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY, &service_uuid, &service_handle);
   APP_ERROR_CHECK(err_code);
 
-  //Add Characteristic:
+  //Add Characteristics:
+  eeg_ads1299_config_char_add(p_eeg);
+
   eeg_ch1_char_add(p_eeg);
   eeg_ch2_char_add(p_eeg);
   eeg_ch3_char_add(p_eeg);

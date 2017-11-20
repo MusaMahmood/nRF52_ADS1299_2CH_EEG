@@ -11,6 +11,8 @@
 #include "nrf.h"
 #include <stdio.h>
 
+uint8_t ads1299_current_config[23];
+
 //NOTE: ADS1299 Default Registers
 uint8_t ads1299_default_registers[] = {
     ADS1299_REGDEFAULT_CONFIG1,
@@ -275,7 +277,7 @@ void ads1299_check_id(void) {
 #endif
 }
 
-void ads1299_init_regs(void) {
+void ads1299_init_regs_default(void) {
   uint8_t err_code;
   uint8_t num_registers = 23;
   uint8_t txrx_size = num_registers + 2;
@@ -323,7 +325,7 @@ void ads1299_read_all_registers(void) {
   if (sum != 23) {
     NRF_LOG_INFO("ADS1299-4 - Data write failed! \n");
     NRF_LOG_INFO("Hexdump of rx_data");
-    NRF_LOG_HEXDUMP_DEBUG(rx_data_spi[2], 23);
+    NRF_LOG_HEXDUMP_DEBUG(&rx_data_spi[2], 23);
     NRF_LOG_HEXDUMP_DEBUG(b, 23);
   } else {
     NRF_LOG_INFO("ADS1299-4 - Data write successful \n");

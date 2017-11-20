@@ -48,9 +48,9 @@
 #define BLE_UUID_BIOPOTENTIAL_EEG_MEASUREMENT_SERVICE 0xEEF0
 
 // Characteristic UUIDs
+#define BLE_UUID_EEG_CONFIG 0xEEFF
 #define BLE_UUID_EEG_CH1_CHAR 0xEEF1
 #define BLE_UUID_EEG_CH2_CHAR 0xEEF2
-
 #define BLE_UUID_EEG_CH3_CHAR 0xEEF3
 #define BLE_UUID_EEG_CH4_CHAR 0xEEF4
 
@@ -67,6 +67,7 @@ typedef struct
   uint8_t uuid_type;
   uint16_t conn_handle;    /**< Event handler to be called for handling events in the Biopotential Measurement Service. */
   uint16_t service_handle; /**< Handle of ble Service (as provided by the BLE stack). */
+  ble_gatts_char_handles_t ads1299_config_char_handles; /**< Handles related to the our body V measure characteristic. */
   ble_gatts_char_handles_t eeg_ch1_handles; /**< Handles related to the our body V measure characteristic. */
   ble_gatts_char_handles_t eeg_ch2_handles; /**< Handles related to the our body V measure characteristic. */
   ble_gatts_char_handles_t eeg_ch3_handles; /**< Handles related to the our body V measure characteristic. */
@@ -95,8 +96,5 @@ void ble_eeg_on_ble_evt(ble_eeg_t *p_eeg, ble_evt_t *p_ble_evt);
 
 void ble_eeg_update_1ch_v2(ble_eeg_t *p_eeg);
 void ble_eeg_update_4ch(ble_eeg_t *p_eeg);
-
-
-
 
 #endif // BLE_EEG_H__

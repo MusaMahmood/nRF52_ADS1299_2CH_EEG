@@ -206,7 +206,7 @@ void ads_spi_init_with_sample_freq(uint8_t spi_sclk);
  */
 void ads1299_powerup_reset(void);
 
-void ads1299_init_regs(void);
+void ads1299_init_regs_default(void);
 
 void ads1299_read_all_registers(void);
 
