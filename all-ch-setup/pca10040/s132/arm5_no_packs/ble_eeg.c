@@ -36,7 +36,7 @@ static void on_write(ble_eeg_t *p_eeg, ble_evt_t *p_ble_evt) {
 
   if ((p_evt_write->handle == p_eeg->ads1299_config_char_handles.value_handle) &&
       (p_evt_write->len >= 1) && (p_eeg->eeg_config_handler != NULL)) {
-      p_eeg->eeg_config_handler(p_ble_evt->evt.gap_evt.conn_handle, p_eeg, &p_evt_write->data[0]);
+    p_eeg->eeg_config_handler(p_ble_evt->evt.gap_evt.conn_handle, p_eeg, &p_evt_write->data[0]);
   }
 }
 
@@ -65,19 +65,24 @@ static uint32_t eeg_ads1299_config_char_add(ble_eeg_t *p_eeg, const ble_eeg_init
   ble_gatts_attr_t attr_char_value;
   ble_uuid_t ble_uuid;
   ble_gatts_attr_md_t attr_md;
-
+  ble_gatts_attr_md_t cccd_md;
   memset(&char_md, 0, sizeof(char_md));
+  memset(&cccd_md, 0, sizeof(cccd_md));
 
+  BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
+  BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
+  cccd_md.vloc = BLE_GATTS_VLOC_STACK;
   char_md.char_props.read = 1;
   char_md.char_props.write = 1;
-  char_md.p_char_user_desc = NULL;
-  char_md.p_char_pf = NULL;
-  char_md.p_user_desc_md = NULL;
-  char_md.p_cccd_md = NULL;
-  char_md.p_sccd_md = NULL;
-
-  ble_uuid.type = p_eeg->uuid_type;
-  ble_uuid.uuid = BLE_UUID_EEG_CONFIG;
+  char_md.char_props.notify = 1;
+  //  char_md.p_char_user_desc = NULL;
+  //  char_md.p_char_pf = NULL;
+  //  char_md.p_user_desc_md = NULL;
+  char_md.p_cccd_md = &cccd_md;
+  //  char_md.p_sccd_md = NULL;
+BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_EEG_CONFIG);
+//  ble_uuid.type = p_eeg->uuid_type;
+//  ble_uuid.uuid = BLE_UUID_EEG_CONFIG;
 
   memset(&attr_md, 0, sizeof(attr_md));
 
@@ -92,10 +97,10 @@ static uint32_t eeg_ads1299_config_char_add(ble_eeg_t *p_eeg, const ble_eeg_init
 
   attr_char_value.p_uuid = &ble_uuid;
   attr_char_value.p_attr_md = &attr_md;
-  attr_char_value.init_len = sizeof(uint8_t);
+  attr_char_value.init_len = 23;
   attr_char_value.init_offs = 0;
-  attr_char_value.max_len = 23*sizeof(uint8_t);
-  attr_char_value.p_value = NULL;
+  attr_char_value.max_len = 23;
+  attr_char_value.p_value = p_eeg->ads1299_current_configuration;
 
   return sd_ble_gatts_characteristic_add(p_eeg->service_handle,
       &char_md,
@@ -308,6 +313,29 @@ void ble_eeg_service_init(ble_eeg_t *p_eeg, const ble_eeg_init_t *p_eeg_init) {
 }
 
 #if defined(ADS1299)
+
+void ble_eeg_update_configuration(ble_eeg_t *p_eeg) {
+  uint32_t err_code;
+  uint16_t attr_handle;
+  if (p_eeg->conn_handle != BLE_CONN_HANDLE_INVALID) {
+    //    uint16_t hvx_len = 23;
+    //    ble_gatts_hvx_params_t const hvx_params = {
+    //        .handle = p_eeg->ads1299_config_char_handles.value_handle,
+    //        .type = BLE_GATT_HVX_NOTIFICATION,
+    //        .offset = 0,
+    //        .p_len = &hvx_len,
+    //        .p_data = p_eeg->ads1299_current_configuration,
+    //    };
+    //    err_code = sd_ble_gatts_hvx(p_eeg->conn_handle, &hvx_params);
+    ble_gatts_value_t value;
+    value.len = 23;
+    value.offset = 0;
+    value.p_value = p_eeg->ads1299_current_configuration; 
+
+    err_code = sd_ble_gatts_value_set(p_eeg->conn_handle, p_eeg->ads1299_config_char_handles.value_handle, &value);
+    NRF_LOG_INFO("err_code ble_eeg_updateconfig 0x%x \n", err_code);
+  }
+}
 
 void ble_eeg_update_1ch_v2(ble_eeg_t *p_eeg) {
   uint32_t err_code;

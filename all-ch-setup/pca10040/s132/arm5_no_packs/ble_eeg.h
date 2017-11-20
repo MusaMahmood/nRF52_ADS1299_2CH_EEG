@@ -80,6 +80,7 @@ struct ble_eeg_s {
   uint16_t service_handle;                              /**< Handle of ble Service (as provided by the BLE stack). */
   ble_gatts_char_handles_t ads1299_config_char_handles; /**< Handles related to the our body V measure characteristic. */
   ble_eeg_write_config_handler_t eeg_config_handler;
+  uint8_t ads1299_current_configuration[23];
   ble_gatts_char_handles_t eeg_ch1_handles;             /**< Handles related to the our body V measure characteristic. */
   ble_gatts_char_handles_t eeg_ch2_handles;             /**< Handles related to the our body V measure characteristic. */
   ble_gatts_char_handles_t eeg_ch3_handles;             /**< Handles related to the our body V measure characteristic. */
@@ -105,7 +106,7 @@ void ble_eeg_on_ble_evt(ble_eeg_t *p_eeg, ble_evt_t *p_ble_evt);
 /**@brief function for updating/notifying BLE of new value.
 *
 */
-
+void ble_eeg_update_configuration(ble_eeg_t *p_eeg);
 void ble_eeg_update_1ch_v2(ble_eeg_t *p_eeg);
 void ble_eeg_update_4ch(ble_eeg_t *p_eeg);
 

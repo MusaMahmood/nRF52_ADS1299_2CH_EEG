@@ -11,8 +11,6 @@
 #include "nrf.h"
 #include <stdio.h>
 
-uint8_t ads1299_current_config[23];
-
 //NOTE: ADS1299 Default Registers
 uint8_t ads1299_default_registers[] = {
     ADS1299_REGDEFAULT_CONFIG1,
@@ -277,9 +275,38 @@ void ads1299_check_id(void) {
 #endif
 }
 
-void ads1299_init_regs_default(void) {
+void ads1299_init_regs(ble_eeg_t *p_eeg, uint8_t *new_register_values) {
   uint8_t err_code;
   uint8_t num_registers = 23;
+  uint8_t txrx_size = num_registers + 2;
+  memcpy_fast(&p_eeg->ads1299_current_configuration[0], &new_register_values[0], num_registers);
+  uint8_t tx_data_spi[txrx_size];
+  uint8_t rx_data_spi[txrx_size];
+  uint8_t wreg_init_opcode = 0x41;
+  memset(&tx_data_spi, 0, txrx_size);
+  memset(&rx_data_spi, 0, txrx_size);
+  tx_data_spi[0] = wreg_init_opcode;
+  tx_data_spi[1] = num_registers - 1;
+  memcpy_fast(&tx_data_spi[2], &new_register_values[0], num_registers);
+  NRF_LOG_HEXDUMP_DEBUG(tx_data_spi, txrx_size);
+  spi_xfer_done = false;
+  APP_ERROR_CHECK(nrf_drv_spi_transfer(&spi, tx_data_spi, txrx_size, NULL, NULL));
+  while (!spi_xfer_done) {
+    __WFE();
+  }
+  nrf_delay_us(5); // wait for ADS1299 to process input before reading register
+  nrf_delay_ms(150);
+#if LOG_LOW_DETAIL == 1
+  NRF_LOG_INFO(" Power-on reset and initialization procedure.. EC: %d \r\n", err_code);
+#endif
+  //NOTE: Copy default values to p_eeg:
+}
+
+void ads1299_init_regs_default(ble_eeg_t *p_eeg) {
+  uint8_t err_code;
+  uint8_t num_registers = 23;
+  memcpy_fast(&p_eeg->ads1299_current_configuration[0], &ads1299_default_registers[0], num_registers);
+
   uint8_t txrx_size = num_registers + 2;
   uint8_t tx_data_spi[txrx_size];
   uint8_t rx_data_spi[txrx_size];
@@ -299,6 +326,7 @@ void ads1299_init_regs_default(void) {
 #if LOG_LOW_DETAIL == 1
   NRF_LOG_INFO(" Power-on reset and initialization procedure.. EC: %d \r\n", err_code);
 #endif
+  //NOTE: Copy default values to p_eeg:
 }
 
 void ads1299_read_all_registers(void) {

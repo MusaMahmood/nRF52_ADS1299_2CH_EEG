@@ -288,10 +288,22 @@ static void on_yys_evt(ble_yy_service_t     * p_yy_service,
 }
 */
 static void eeg_config_handler(uint16_t conn_handle, ble_eeg_t *p_eeg, uint8_t *data) {
-  NRF_LOG_INFO("data received\n");
+  NRF_LOG_INFO("REGISTER DATA RECEIVED: \n");
   NRF_LOG_HEXDUMP_DEBUG(data, 23);
-}
+  //TODO: Stop sampling
+  //  ads1299_standby();
+  ads1299_stop_rdatac();
+  //TODO: write new register values:
+  ads1299_init_regs(&m_eeg, data);
+  //Start again:
+  ads1299_read_all_registers();
 
+  ads1299_soft_start_conversion();
+  ads1299_check_id();
+  ads1299_start_rdatac();
+//  ads1299_standby();
+  ads1299_wake();
+}
 
 /**@brief Function for initializing services that will be used by the application.
  */
@@ -441,8 +453,6 @@ static void on_ble_evt(ble_evt_t *p_ble_evt) {
     break; // BLE_GAP_EVT_DISCONNECTED
 
   case BLE_GAP_EVT_CONNECTED:
-//    ads_spi_uninit();
-//    ads_spi_init_with_sample_freq(SPI_SCLK_SAMPLING);
 #if defined(ADS1299)
     ads1299_wake();
 #endif
@@ -454,6 +464,8 @@ static void on_ble_evt(ble_evt_t *p_ble_evt) {
     NRF_LOG_INFO("Connected.\r\n");
     m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
     m_connected = true;
+    //NOTE: send init registers to GATT:
+    ble_eeg_update_configuration(&m_eeg);
     break; // BLE_GAP_EVT_CONNECTED
 
   case BLE_GATTC_EVT_TIMEOUT:
@@ -787,7 +799,7 @@ int main(void) {
   ads1299_powerdn();
   ads1299_powerup();
   ads1299_stop_rdatac();
-  ads1299_init_regs_default();
+  ads1299_init_regs_default(&m_eeg);
 
   ads1299_read_all_registers();
 
@@ -801,6 +813,7 @@ int main(void) {
   // Start execution.
   application_timers_start();
   advertising_start();
+  NRF_LOG_HEXDUMP_DEBUG(m_eeg.ads1299_current_configuration, 23)
   NRF_LOG_RAW_INFO(" BLE Advertising Start! \r\n");
   NRF_LOG_FLUSH();
 #if LEDS_ENABLE == 1
