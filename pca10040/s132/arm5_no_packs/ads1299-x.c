@@ -275,9 +275,38 @@ void ads1299_check_id(void) {
 #endif
 }
 
-void ads1299_init_regs(void) {
+void ads1299_init_regs(ble_eeg_t *p_eeg, uint8_t *new_register_values) {
   uint8_t err_code;
   uint8_t num_registers = 23;
+  uint8_t txrx_size = num_registers + 2;
+  memcpy_fast(&p_eeg->ads1299_current_configuration[0], &new_register_values[0], num_registers);
+  uint8_t tx_data_spi[txrx_size];
+  uint8_t rx_data_spi[txrx_size];
+  uint8_t wreg_init_opcode = 0x41;
+  memset(&tx_data_spi, 0, txrx_size);
+  memset(&rx_data_spi, 0, txrx_size);
+  tx_data_spi[0] = wreg_init_opcode;
+  tx_data_spi[1] = num_registers - 1;
+  memcpy_fast(&tx_data_spi[2], &new_register_values[0], num_registers);
+  NRF_LOG_HEXDUMP_DEBUG(tx_data_spi, txrx_size);
+  spi_xfer_done = false;
+  APP_ERROR_CHECK(nrf_drv_spi_transfer(&spi, tx_data_spi, txrx_size, NULL, NULL));
+  while (!spi_xfer_done) {
+    __WFE();
+  }
+  nrf_delay_us(5); // wait for ADS1299 to process input before reading register
+  nrf_delay_ms(150);
+#if LOG_LOW_DETAIL == 1
+  NRF_LOG_INFO(" Power-on reset and initialization procedure.. EC: %d \r\n", err_code);
+#endif
+  //NOTE: Copy default values to p_eeg:
+}
+
+void ads1299_init_regs_default(ble_eeg_t *p_eeg) {
+  uint8_t err_code;
+  uint8_t num_registers = 23;
+  memcpy_fast(&p_eeg->ads1299_current_configuration[0], &ads1299_default_registers[0], num_registers);
+
   uint8_t txrx_size = num_registers + 2;
   uint8_t tx_data_spi[txrx_size];
   uint8_t rx_data_spi[txrx_size];
@@ -297,9 +326,10 @@ void ads1299_init_regs(void) {
 #if LOG_LOW_DETAIL == 1
   NRF_LOG_INFO(" Power-on reset and initialization procedure.. EC: %d \r\n", err_code);
 #endif
+  //NOTE: Copy default values to p_eeg:
 }
 
-void ads1299_read_all_registers(void) {
+void ads1299_read_all_registers(ble_eeg_t *p_eeg) {
   uint8_t tx_data_spi[3];
   uint8_t rx_data_spi[25];
   memset(rx_data_spi, 0, 25);
@@ -316,14 +346,14 @@ void ads1299_read_all_registers(void) {
   uint8_t sum = 0;
   //check registers
   for (uint8_t i = 0; i < 23; i++) {
-    b[i] = rx_data_spi[2 + i] == ads1299_default_registers[i];
+    b[i] = rx_data_spi[2 + i] == &p_eeg->ads1299_current_configuration[i];
     sum += b[i];
   }
 
   if (sum != 23) {
     NRF_LOG_INFO("ADS1299-4 - Data write failed! \n");
     NRF_LOG_INFO("Hexdump of rx_data");
-    NRF_LOG_HEXDUMP_DEBUG(rx_data_spi[2], 23);
+    NRF_LOG_HEXDUMP_DEBUG(&rx_data_spi[2], 23);
     NRF_LOG_HEXDUMP_DEBUG(b, 23);
   } else {
     NRF_LOG_INFO("ADS1299-4 - Data write successful \n");

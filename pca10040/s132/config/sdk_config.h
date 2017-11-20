@@ -1,12 +1,19 @@
-
-
 #ifndef SDK_CONFIG_H
 #define SDK_CONFIG_H
 // <<< Use Configuration Wizard in Context Menu >>>\n
+
 #ifdef USE_APP_CONFIG
 #include "app_config.h"
 #endif
 // <h> nRF_BLE 
+#ifndef SAMPLE_RATE
+#define SAMPLE_RATE 250
+#endif
+
+
+#ifndef LEDS_ENABLE
+#define LEDS_ENABLE 1
+#endif
 
 //==========================================================
 // <q> BLE_ADVERTISING_ENABLED  - ble_advertising - Advertising module
@@ -38,7 +45,7 @@
 #if  NRF_BLE_GATT_ENABLED
 // <o> NRF_BLE_GATT_MAX_MTU_SIZE - Static maximum MTU size that is passed to the @ref sd_ble_enable function. 
 #ifndef NRF_BLE_GATT_MAX_MTU_SIZE
-#define NRF_BLE_GATT_MAX_MTU_SIZE 23
+#define NRF_BLE_GATT_MAX_MTU_SIZE 249//23
 #endif
 
 #endif //NRF_BLE_GATT_ENABLED
@@ -55,7 +62,7 @@
  
 
 #ifndef PEER_MANAGER_ENABLED
-#define PEER_MANAGER_ENABLED 1
+#define PEER_MANAGER_ENABLED 0
 #endif
 
 // </h> 
@@ -110,7 +117,7 @@
  
 
 #ifndef BLE_DIS_ENABLED
-#define BLE_DIS_ENABLED 0
+#define BLE_DIS_ENABLED 1
 #endif
 
 // <q> BLE_GLS_ENABLED  - ble_gls - Glucose Service
@@ -314,7 +321,7 @@
 // <7=> 7 
 
 #ifndef CLOCK_CONFIG_IRQ_PRIORITY
-#define CLOCK_CONFIG_IRQ_PRIORITY 7
+#define CLOCK_CONFIG_IRQ_PRIORITY 6
 #endif
 
 // <e> CLOCK_CONFIG_LOG_ENABLED - Enables logging in the module.
@@ -588,7 +595,7 @@
 #if  GPIOTE_ENABLED
 // <o> GPIOTE_CONFIG_NUM_OF_LOW_POWER_EVENTS - Number of lower power input pins 
 #ifndef GPIOTE_CONFIG_NUM_OF_LOW_POWER_EVENTS
-#define GPIOTE_CONFIG_NUM_OF_LOW_POWER_EVENTS 4
+#define GPIOTE_CONFIG_NUM_OF_LOW_POWER_EVENTS 1
 #endif
 
 // <o> GPIOTE_CONFIG_IRQ_PRIORITY  - Interrupt priority
@@ -605,7 +612,7 @@
 // <7=> 7 
 
 #ifndef GPIOTE_CONFIG_IRQ_PRIORITY
-#define GPIOTE_CONFIG_IRQ_PRIORITY 7
+#define GPIOTE_CONFIG_IRQ_PRIORITY 6
 #endif
 
 // <e> GPIOTE_CONFIG_LOG_ENABLED - Enables logging in the module.
@@ -1396,13 +1403,6 @@
 #define PWM2_ENABLED 0
 #endif
 
-// <q> PWM3_ENABLED  - Enable PWM3 instance
- 
-
-#ifndef PWM3_ENABLED
-#define PWM3_ENABLED 0
-#endif
-
 // <e> PWM_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================
 #ifndef PWM_CONFIG_LOG_ENABLED
@@ -1454,6 +1454,36 @@
 #endif
 
 #endif //PWM_CONFIG_LOG_ENABLED
+// </e>
+
+// <e> PWM_NRF52_ANOMALY_109_WORKAROUND_ENABLED - Enables nRF52 Anomaly 109 workaround for PWM.
+
+// <i> The workaround uses interrupts to wake up the CPU and ensure
+// <i> it is active when PWM is about to start a DMA transfer. For
+// <i> initial transfer, done when a playback is started via PPI,
+// <i> a specific EGU instance is used to generate the interrupt.
+// <i> During the playback, the PWM interrupt triggered on SEQEND
+// <i> event of a preceding sequence is used to protect the transfer
+// <i> done for the next sequence to be played.
+//==========================================================
+#ifndef PWM_NRF52_ANOMALY_109_WORKAROUND_ENABLED
+#define PWM_NRF52_ANOMALY_109_WORKAROUND_ENABLED 0
+#endif
+#if  PWM_NRF52_ANOMALY_109_WORKAROUND_ENABLED
+// <o> PWM_NRF52_ANOMALY_109_EGU_INSTANCE  - EGU instance used by the nRF52 Anomaly 109 workaround for PWM.
+ 
+// <0=> EGU0 
+// <1=> EGU1 
+// <2=> EGU2 
+// <3=> EGU3 
+// <4=> EGU4 
+// <5=> EGU5 
+
+#ifndef PWM_NRF52_ANOMALY_109_EGU_INSTANCE
+#define PWM_NRF52_ANOMALY_109_EGU_INSTANCE 5
+#endif
+
+#endif //PWM_NRF52_ANOMALY_109_WORKAROUND_ENABLED
 // </e>
 
 #endif //PWM_ENABLED
@@ -2078,13 +2108,27 @@
 #endif //SPIS_CONFIG_LOG_ENABLED
 // </e>
 
+// <q> SPIS_NRF52_ANOMALY_109_WORKAROUND_ENABLED  - Enables nRF52 Anomaly 109 workaround for SPIS.
+ 
+
+// <i> The workaround uses a GPIOTE channel to generate interrupts
+// <i> on falling edges detected on the CSN line. This will make
+// <i> the CPU active for the moment when SPIS starts DMA transfers,
+// <i> and this way the transfers will be protected.
+// <i> This workaround uses GPIOTE driver, so this driver must be
+// <i> enabled as well.
+
+#ifndef SPIS_NRF52_ANOMALY_109_WORKAROUND_ENABLED
+#define SPIS_NRF52_ANOMALY_109_WORKAROUND_ENABLED 0
+#endif
+
 #endif //SPIS_ENABLED
 // </e>
 
 // <e> SPI_ENABLED - nrf_drv_spi - SPI/SPIM peripheral driver
 //==========================================================
 #ifndef SPI_ENABLED
-#define SPI_ENABLED 0
+#define SPI_ENABLED 1
 #endif
 #if  SPI_ENABLED
 // <o> SPI_DEFAULT_CONFIG_IRQ_PRIORITY  - Interrupt priority
@@ -2107,7 +2151,7 @@
 // <e> SPI0_ENABLED - Enable SPI0 instance
 //==========================================================
 #ifndef SPI0_ENABLED
-#define SPI0_ENABLED 0
+#define SPI0_ENABLED 1
 #endif
 #if  SPI0_ENABLED
 // <q> SPI0_USE_EASY_DMA  - Use EasyDMA
@@ -2202,7 +2246,7 @@
 // <4=> Debug 
 
 #ifndef SPI_CONFIG_LOG_LEVEL
-#define SPI_CONFIG_LOG_LEVEL 3
+#define SPI_CONFIG_LOG_LEVEL 4
 #endif
 
 // <o> SPI_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -2239,6 +2283,20 @@
 
 #endif //SPI_CONFIG_LOG_ENABLED
 // </e>
+
+// <q> SPIM_NRF52_ANOMALY_109_WORKAROUND_ENABLED  - Enables nRF52 anomaly 109 workaround for SPIM.
+ 
+
+// <i> The workaround uses interrupts to wake up the CPU by catching
+// <i> a start event of zero-length transmission to start the clock. This 
+// <i> ensures that the DMA transfer will be executed without issues and
+// <i> that the proper transfer will be started. See more in the Errata 
+// <i> document or Anomaly 109 Addendum located at 
+// <i> https://infocenter.nordicsemi.com/
+
+#ifndef SPIM_NRF52_ANOMALY_109_WORKAROUND_ENABLED
+#define SPIM_NRF52_ANOMALY_109_WORKAROUND_ENABLED 0
+#endif
 
 #endif //SPI_ENABLED
 // </e>
@@ -2307,7 +2365,7 @@
  
 
 #ifndef TIMER0_ENABLED
-#define TIMER0_ENABLED 0
+#define TIMER0_ENABLED 1
 #endif
 
 // <q> TIMER1_ENABLED  - Enable TIMER1 instance
@@ -2538,7 +2596,7 @@
 // <e> TWI_ENABLED - nrf_drv_twi - TWI/TWIM peripheral driver
 //==========================================================
 #ifndef TWI_ENABLED
-#define TWI_ENABLED 0
+#define TWI_ENABLED 1
 #endif
 #if  TWI_ENABLED
 // <o> TWI_DEFAULT_CONFIG_FREQUENCY  - Frequency
@@ -2548,7 +2606,7 @@
 // <104857600=> 400k 
 
 #ifndef TWI_DEFAULT_CONFIG_FREQUENCY
-#define TWI_DEFAULT_CONFIG_FREQUENCY 26738688
+#define TWI_DEFAULT_CONFIG_FREQUENCY 26738688 ///Changed Mon 08/14/17
 #endif
 
 // <q> TWI_DEFAULT_CONFIG_CLR_BUS_INIT  - Enables bus clearing procedure during init
@@ -2601,14 +2659,14 @@
 // <e> TWI1_ENABLED - Enable TWI1 instance
 //==========================================================
 #ifndef TWI1_ENABLED
-#define TWI1_ENABLED 0
+#define TWI1_ENABLED 1
 #endif
 #if  TWI1_ENABLED
 // <q> TWI1_USE_EASY_DMA  - Use EasyDMA (if present)
  
 
 #ifndef TWI1_USE_EASY_DMA
-#define TWI1_USE_EASY_DMA 0
+#define TWI1_USE_EASY_DMA 1
 #endif
 
 #endif //TWI1_ENABLED
@@ -2629,7 +2687,7 @@
 // <4=> Debug 
 
 #ifndef TWI_CONFIG_LOG_LEVEL
-#define TWI_CONFIG_LOG_LEVEL 3
+#define TWI_CONFIG_LOG_LEVEL 4
 #endif
 
 // <o> TWI_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -2667,13 +2725,26 @@
 #endif //TWI_CONFIG_LOG_ENABLED
 // </e>
 
+// <q> TWIM_NRF52_ANOMALY_109_WORKAROUND_ENABLED  - Enables nRF52 anomaly 109 workaround for TWIM.
+ 
+
+// <i> The workaround uses interrupts to wake up the CPU by catching
+// <i> the start event of zero-frequency transmission, clear the 
+// <i> peripheral, set desired frequency, start the peripheral, and
+// <i> the proper transmission. See more in the Errata document or
+// <i> Anomaly 109 Addendum located at https://infocenter.nordicsemi.com/
+
+#ifndef TWIM_NRF52_ANOMALY_109_WORKAROUND_ENABLED
+#define TWIM_NRF52_ANOMALY_109_WORKAROUND_ENABLED 0
+#endif
+
 #endif //TWI_ENABLED
 // </e>
 
 // <e> UART_ENABLED - nrf_drv_uart - UART/UARTE peripheral driver
 //==========================================================
 #ifndef UART_ENABLED
-#define UART_ENABLED 1
+#define UART_ENABLED 0
 #endif
 #if  UART_ENABLED
 // <o> UART_DEFAULT_CONFIG_HWFC  - Hardware Flow Control
@@ -2762,22 +2833,6 @@
 #endif
 
 #endif //UART0_ENABLED
-// </e>
-
-// <e> UART1_ENABLED - Enable UART1 instance
-//==========================================================
-#ifndef UART1_ENABLED
-#define UART1_ENABLED 0
-#endif
-#if  UART1_ENABLED
-// <q> UART1_CONFIG_USE_EASY_DMA  - Default setting for using EasyDMA
- 
-
-#ifndef UART1_CONFIG_USE_EASY_DMA
-#define UART1_CONFIG_USE_EASY_DMA 1
-#endif
-
-#endif //UART1_ENABLED
 // </e>
 
 // <e> UART_CONFIG_LOG_ENABLED - Enables logging in the module.
@@ -3024,6 +3079,11 @@
 #define APP_TIMER_ENABLED 1
 #endif
 #if  APP_TIMER_ENABLED
+
+#ifndef APP_TIMER_SAMPLING
+#define APP_TIMER_SAMPLING 1
+#endif
+
 // <o> APP_TIMER_CONFIG_RTC_FREQUENCY  - Configure RTC prescaler.
  
 // <0=> 32768 Hz 
@@ -3163,7 +3223,7 @@
  
 
 #ifndef BUTTON_ENABLED
-#define BUTTON_ENABLED 1
+#define BUTTON_ENABLED 0
 #endif
 
 // <q> CRC16_ENABLED  - crc16 - CRC16 calculation routines
@@ -3662,14 +3722,25 @@
 // <e> NRF_LOG_ENABLED - nrf_log - Logging
 //==========================================================
 #ifndef NRF_LOG_ENABLED
-#define NRF_LOG_ENABLED 1
+#define NRF_LOG_ENABLED 1 //Check NRF_LOG_BACKEND.. .RTT
 #endif
-#if  NRF_LOG_ENABLED
+#if NRF_LOG_ENABLED
 // <e> NRF_LOG_USES_COLORS - If enabled then ANSI escape code for colors is prefixed to every string
 //==========================================================
 #ifndef NRF_LOG_USES_COLORS
 #define NRF_LOG_USES_COLORS 0
 #endif
+//Additional Config Stuff: (Musa Mahmood; 08-09-2017)
+
+#ifndef LOG_HIGH_DETAIL
+#define LOG_HIGH_DETAIL 0
+#endif
+
+#ifndef LOG_LOW_DETAIL
+#define LOG_LOW_DETAIL 1
+#endif
+
+
 #if  NRF_LOG_USES_COLORS
 // <o> NRF_LOG_COLOR_DEFAULT  - ANSI escape code prefix.
  
@@ -3731,7 +3802,7 @@
 // <4=> Debug 
 
 #ifndef NRF_LOG_DEFAULT_LEVEL
-#define NRF_LOG_DEFAULT_LEVEL 3
+#define NRF_LOG_DEFAULT_LEVEL 4
 #endif
 
 // <e> NRF_LOG_DEFERRED - Enable deffered logger.
@@ -3784,7 +3855,7 @@
 // <e> NRF_LOG_BACKEND_SERIAL_USES_UART - If enabled data is printed over UART
 //==========================================================
 #ifndef NRF_LOG_BACKEND_SERIAL_USES_UART
-#define NRF_LOG_BACKEND_SERIAL_USES_UART 1
+#define NRF_LOG_BACKEND_SERIAL_USES_UART 0
 #endif
 #if  NRF_LOG_BACKEND_SERIAL_USES_UART
 // <o> NRF_LOG_BACKEND_SERIAL_UART_BAUDRATE  - Default Baudrate
@@ -3853,7 +3924,7 @@
 // <e> NRF_LOG_BACKEND_SERIAL_USES_RTT - If enabled data is printed using RTT
 //==========================================================
 #ifndef NRF_LOG_BACKEND_SERIAL_USES_RTT
-#define NRF_LOG_BACKEND_SERIAL_USES_RTT 0
+#define NRF_LOG_BACKEND_SERIAL_USES_RTT 1
 #endif
 #if  NRF_LOG_BACKEND_SERIAL_USES_RTT
 // <o> NRF_LOG_BACKEND_RTT_OUTPUT_BUFFER_SIZE - RTT output buffer size. 
@@ -3915,7 +3986,7 @@
 // <2=> BLOCK_IF_FIFO_FULL 
 
 #ifndef SEGGER_RTT_CONFIG_DEFAULT_MODE
-#define SEGGER_RTT_CONFIG_DEFAULT_MODE 0
+#define SEGGER_RTT_CONFIG_DEFAULT_MODE 2
 #endif
 
 // </h> 
