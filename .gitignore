@@ -171,3 +171,4 @@ custom_board/s130/arm5_no_packs/_build/
 pca10040/s132/arm5_no_packs/_build/
 pca10040/s132/arm5_no_packs/Output/ble_app_template_pca10040_s132 nrf52832_xxaa/Obj/ads1299-x.d
 pca10040/s132/arm5_no_packs/Output/
+desktop.ini
